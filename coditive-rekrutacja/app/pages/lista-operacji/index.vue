@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PriceCalculatorForm />
+        <p>Lista wypełnień formularza z bazy danych.</p>
     </div>
 </template>
 

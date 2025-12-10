@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PriceCalculatorForm />
+        <p>header</p>
     </div>
 </template>
 
