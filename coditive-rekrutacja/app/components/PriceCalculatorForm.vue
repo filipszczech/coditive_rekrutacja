@@ -69,6 +69,7 @@
 
 <script setup>
     const { form_data, calculate, reset } = useForm();
+    const { show_toast } = useToast();
 
     const h = reactive({
         result: null,
@@ -78,6 +79,7 @@
     const submit_form = async () => {
         h.result = calculate();
         console.log(h.result);
+        show_toast(`Składka produktu ${h.result.name} została obliczona.`, 'success');
         reset();
     }
 </script>
