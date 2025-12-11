@@ -1,9 +1,13 @@
 <template>
-    <div class="max-w-lg mx-auto">
-        <h2 class="text-lg md:text-2xl font-semibold mb-4">
-            Kalkulator VAT
-        </h2>
-        <form @submit.prevent="submit_form" class="flex flex-col gap-3">
+    <div class="max-w-xl mx-auto">
+        <CoditiveHeader class="mb-4">
+            <template #text>
+                <h2 class="text-lg md:text-2xl font-semibold">
+                    Kalkulator VAT
+                </h2>
+            </template>
+        </CoditiveHeader>
+        <form @submit.prevent="submit_form" class="flex flex-col gap-4">
             <div>
                 <label class="block text-sm font-semibold mb-2">
                     Nazwa produktu:
