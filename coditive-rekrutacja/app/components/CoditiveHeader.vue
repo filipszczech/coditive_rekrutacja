@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-end gap-2">
+    <div class="flex flex-wrap items-end gap-2">
         <div ref="text_ref">
             <slot name="text"></slot>
         </div>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <div class="p-4">
+        <div class="mt-14 lg:mt-16 p-4">
             <slot />
         </div>
     </div>
