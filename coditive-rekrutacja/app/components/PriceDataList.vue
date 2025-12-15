@@ -36,13 +36,28 @@
                 </tr>
                 </tbody>
             </table>
+            <div v-if="h.loading">
+                <Loader />
+            </div>
+            <div class="flex justify-center mt-6">
+                <button
+                    v-if="h.next_cursor"
+                    :disabled="h.loading"
+                    @click="load_more"
+                    class="px-6 py-2 bg-coditive_accent text-black font-semibold rounded-md"
+                    >
+                    Załaduj więcej
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
     const h = reactive({
-        data: null,
+        data: [],
+        next_cursor: null,
+        loading: false,
     });
 
     const { data, error } = await useFetch("/api/financial-records");
@@ -53,4 +68,29 @@
     } else {
         h.data = [];
     }
+
+    if (data.value?.success) {
+        h.data = data.value.data;
+        h.next_cursor = data.value.next_cursor;
+    }
+
+    const load_more = async () => {
+        if (!h.next_cursor) return;
+        h.loading = true;
+
+        const { data, error } = await useFetch("/api/financial-records", {
+            query: { after: h.next_cursor },
+        });
+
+        h.loading = false;
+        if (error.value) {
+            return;
+        }
+        if (!data.value?.data?.length) {
+            h.next_cursor = null;
+            return;
+        }
+        h.data.push(...data.value.data);
+        h.next_cursor = data.value.next_cursor;
+    };
 </script>
