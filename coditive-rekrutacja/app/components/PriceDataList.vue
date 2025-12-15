@@ -25,12 +25,12 @@
                 <tbody>
                 <tr v-for="d in h.data" :key="d.id" class="text-center bg-coditive_gray">
                     <td class="border p-2">{{ d.name }}</td>
-                    <td class="border p-2">{{ d.netto }}</td>
+                    <td class="border p-2">{{ format_currency(d.netto) }}</td>
                     <td class="border p-2">{{ d.currency }}</td>
                     <td class="border p-2">{{ d.vat }}</td>
                     <td class="border p-2">{{ d.vat_name }}</td>
-                    <td class="border p-2">{{ d.tax }}</td>
-                    <td class="border p-2">{{ d.brutto }}</td>
+                    <td class="border p-2">{{ format_currency(d.tax) }}</td>
+                    <td class="border p-2">{{ format_currency(d.brutto) }}</td>
                     <td class="border p-2">{{ d.user_ip }}</td>
                     <td class="border p-2">{{ d.created }}</td>
                 </tr>
@@ -93,4 +93,6 @@
             h.loading = false;
         }
     };
+
+    const format_currency = (value) => Number(value).toFixed(2);
 </script>

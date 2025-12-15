@@ -2,12 +2,24 @@ import { db } from "~/drizzle";
 import { financial_records_table } from "~/drizzle/db/schema";
 import { getQuery } from "h3";
 import { desc, lt } from "drizzle-orm";
+import { z } from "zod";
+
+const query_schema = z.object({
+    after: z.string().optional(),
+});
 
 export default defineEventHandler(async (event) => {
     try {
         const limit = 12;
         const query = getQuery(event);
-        const after = query.after ? String(query.after) : null;
+        const parsed = query_schema.safeParse(query);
+        if (!parsed.success) {
+            return {
+                success: false,
+                error: "Nieprawidłowe dane wejściowe",
+            };
+        }
+        const after = parsed.data.after ?? null;
         
         const records = await db
             .select()
