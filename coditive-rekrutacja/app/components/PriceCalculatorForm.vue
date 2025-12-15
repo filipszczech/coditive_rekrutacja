@@ -62,7 +62,10 @@
                 Oblicz
             </button>
         </form>
-        <div v-if="h.result" class="mt-6 p-3 bg-neutral-200 rounded-md text-center font-semibold">
+        <div v-if="h.loading" class="flex justify-center mt-6">
+            <Loader />
+        </div>
+        <div v-else-if="h.result" class="mt-6 p-3 bg-neutral-200 rounded-md text-center font-semibold">
             Cena produktu {{ h.result.name }}, wynosi: {{ h.result.brutto }} zł brutto, kwota podatku to {{ h.result.tax }} zł.
         </div>
     </div>
