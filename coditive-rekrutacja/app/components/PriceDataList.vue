@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="error" class="text-red-500 text-center">
-            Wystąpił błąd podczas pobierania danych: {{ error }}
+        <div v-if="h.error" class="text-red-500 text-center">
+            Wystąpił błąd podczas pobierania danych: {{ h.error }}
         </div>
 
         <div v-else-if="!h.data?.length === 0" class="text-center">
@@ -58,39 +58,39 @@
         data: [],
         next_cursor: null,
         loading: false,
+        error: null,
     });
 
     const { data, error } = await useFetch("/api/financial-records");
     if (error.value) {
         h.data = null;
+        h.error = error.value;
     } else if (data.value?.success) {
         h.data = data.value.data;
+        h.next_cursor = data.value.next_cursor;
     } else {
         h.data = [];
-    }
-
-    if (data.value?.success) {
-        h.data = data.value.data;
-        h.next_cursor = data.value.next_cursor;
     }
 
     const load_more = async () => {
         if (!h.next_cursor) return;
         h.loading = true;
+        try {
+            const resp = await $fetch("/api/financial-records", {
+                query: { after: h.next_cursor, },
+            });
 
-        const { data, error } = await useFetch("/api/financial-records", {
-            query: { after: h.next_cursor },
-        });
+            if (!resp.success || !resp.data?.length) {
+                h.next_cursor = null;
+                return;
+            }
 
-        h.loading = false;
-        if (error.value) {
-            return;
+            h.data.push(...resp.data);
+            h.next_cursor = resp.next_cursor;
+        } catch (error) {
+            h.error = error;
+        } finally {
+            h.loading = false;
         }
-        if (!data.value?.data?.length) {
-            h.next_cursor = null;
-            return;
-        }
-        h.data.push(...data.value.data);
-        h.next_cursor = data.value.next_cursor;
     };
 </script>

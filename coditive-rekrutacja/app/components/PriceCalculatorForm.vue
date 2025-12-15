@@ -83,25 +83,31 @@
     const submit_form = async () => {
         h.loading = true;
         const result = calculate();
-        const { data } = await useFetch("/api/financial-records", {
-            method: "POST",
-            body: {
-                name: result.name,
-                netto: result.netto,
-                currency: result.currency,
-                vat: result.vat,
-                vat_name: result.vat_name,
-                tax: result.tax,
-                brutto: result.brutto,
-            },
-        });
-        if (data.value?.success) {
+        try {
+            const resp = await $fetch("/api/financial-records", {
+                method: "POST",
+                body: {
+                    name: result.name,
+                    netto: result.netto,
+                    currency: result.currency,
+                    vat: result.vat,
+                    vat_name: result.vat_name,
+                    tax: result.tax,
+                    brutto: result.brutto,
+                },
+            });
+            if (resp.success) {
                 show_toast(`Składka produktu ${result.name} została obliczona.`, "success");
                 h.result = result;
                 reset();
-        } else {
-            show_toast(data.value?.error || "Nie udało się zapisać danych", "error");
+            } else {
+                show_toast(resp.error || "Nie udało się zapisać danych", "error");
+            }
+        } catch (error) {
+            show_toast("Błąd połączenia z serwerem", "error");
+        } finally {
+            h.loading = false;
         }
-        h.loading = false;
+
     };
 </script>

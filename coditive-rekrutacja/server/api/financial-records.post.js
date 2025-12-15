@@ -1,11 +1,16 @@
 import { db } from "~/drizzle";
 import { financial_records_table } from "~/drizzle/db/schema";
-import { getRequestIP, readBody } from "h3";
+import { getRequestIP, getHeader, readBody } from "h3";
 
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event);
-        const ip = getRequestIP(event) || event.node.req.socket.remoteAddress || "unknown";
+        const ip =
+            getRequestIP(event) ||
+            getHeader(event, "x-real-ip") ||
+            getHeader(event, "x-forwarded-for")?.split(",")[0]?.trim() ||
+            event.node.req.socket?.remoteAddress ||
+            "-";
 
         const record = {
             name: body.name,
