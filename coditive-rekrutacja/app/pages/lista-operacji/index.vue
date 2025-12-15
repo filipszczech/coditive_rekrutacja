@@ -31,4 +31,16 @@
     const AsyncPriceDataList = defineAsyncComponent(() => 
         import('~/components/PriceDataList.vue')
     );
+
+    useHead({
+        title: "Coditive rekrutacja - lista operacji",
+        meta: [
+            { name: 'og:title', content: 'Coditive rekrutacja - lista operacji' },
+            { name: 'description', content: 'Coditive rekrutacja - widok zawierający listę wszystkich wypełnień kalkulatora VAT.' },
+            { property: 'og:description', content: 'Coditive rekrutacja - widok zawierający listę wszystkich wypełnień kalkulatora VAT.' },
+        ],
+        htmlAttrs: {
+            lang: 'pl'
+        },
+    });
 </script>

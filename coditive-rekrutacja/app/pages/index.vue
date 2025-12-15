@@ -19,5 +19,15 @@
 </template>
 
 <script setup>
-
+    useHead({
+        title: "Coditive rekrutacja - kalkulator VAT",
+        meta: [
+            { name: 'og:title', content: 'Coditive rekrutacja - kalkulator VAT' },
+            { name: 'description', content: 'Coditive rekrutacja - widok zawierający formularz kalkulatora VAT.' },
+            { property: 'og:description', content: 'Coditive rekrutacja - widok zawierający formularz kalkulatora VAT.' },
+        ],
+        htmlAttrs: {
+            lang: 'pl'
+        },
+    });
 </script>
