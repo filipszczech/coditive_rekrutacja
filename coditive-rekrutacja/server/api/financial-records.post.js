@@ -1,10 +1,28 @@
 import { db } from "~/drizzle";
 import { financial_records_table } from "~/drizzle/db/schema";
 import { getRequestIP, getHeader, readBody } from "h3";
+import { z } from "zod";
+
+const record_schema = z.object({
+    name: z.string().min(1).max(128),
+    netto: z.number().nonnegative(),
+    currency: z.enum(["PLN"]),
+    vat: z.number().nonnegative(),
+    vat_name: z.enum(['23%', '22%', '8%', '7%', '5%', '3%', '0%', 'zw.', 'np.', 'o.o.']),
+    tax: z.number().nonnegative(),
+    brutto: z.number().nonnegative(),
+});
 
 export default defineEventHandler(async (event) => {
     try {
         const body = await readBody(event);
+        const parsed = record_schema.safeParse(body);
+        if(!parsed.success) {
+            return {
+                success: false,
+                error: "Nieprawidłowe dane wejściowe",
+            };
+        }
         const ip =
             getRequestIP(event) ||
             getHeader(event, "x-real-ip") ||
@@ -13,13 +31,7 @@ export default defineEventHandler(async (event) => {
             "-";
 
         const record = {
-            name: body.name,
-            netto: body.netto,
-            currency: body.currency,
-            vat: body.vat,
-            vat_name: body.vat_name,
-            tax: body.tax,
-            brutto: body.brutto,
+            ...parsed.data,
             user_ip: ip,
         };
 

@@ -1,5 +1,5 @@
 <template>
-    <footer class="flex justify-center w-full mx-auto max-w-xl border-t border-neutral-200 py-4 text-neutral-500">
+    <footer class="flex justify-center text-center w-full mx-auto max-w-xl border-t border-neutral-200 px-4 py-4 text-neutral-500">
         <span>
             Realizacja zadania: Filip Szczęch | 
             <a
