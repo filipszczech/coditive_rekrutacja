@@ -56,12 +56,16 @@
                 </select>
             </div>
             <button
+                :disabled="h.loading"
                 type="submit"
                 class="bg-neutral-900 hover:bg-neutral-300 text-white hover:text-neutral-900 py-2 rounded-md mt-2 transition-all duration-300">
                 Oblicz
             </button>
         </form>
-        <div v-if="h.result" class="mt-6 p-3 bg-neutral-200 rounded-md text-center font-semibold">
+        <div v-if="h.loading" class="flex justify-center mt-6">
+            <Loader />
+        </div>
+        <div v-else-if="h.result" class="mt-6 p-3 bg-neutral-200 rounded-md text-center font-semibold">
             Cena produktu {{ h.result.name }}, wynosi: {{ h.result.brutto }} zł brutto, kwota podatku to {{ h.result.tax }} zł.
         </div>
     </div>
@@ -77,9 +81,33 @@
     });
 
     const submit_form = async () => {
-        h.result = calculate();
-        console.log(h.result);
-        show_toast(`Składka produktu ${h.result.name} została obliczona.`, 'success');
-        reset();
-    }
+        h.loading = true;
+        const result = calculate();
+        try {
+            const resp = await $fetch("/api/financial-records", {
+                method: "POST",
+                body: {
+                    name: result.name,
+                    netto: result.netto,
+                    currency: result.currency,
+                    vat: result.vat,
+                    vat_name: result.vat_name,
+                    tax: result.tax,
+                    brutto: result.brutto,
+                },
+            });
+            if (resp.success) {
+                show_toast(`Składka produktu ${result.name} została obliczona.`, "success");
+                h.result = result;
+                reset();
+            } else {
+                show_toast(resp.error || "Nie udało się zapisać danych", "error");
+            }
+        } catch (error) {
+            show_toast("Błąd połączenia z serwerem", "error");
+        } finally {
+            h.loading = false;
+        }
+
+    };
 </script>
